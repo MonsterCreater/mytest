@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+	<!-- 加载配置文件 -->
+	<!-- <context:property-placeholder location="classpath:jdbc.properties" /> -->
+	<!-- 连接到数据库连接池 -->
+	<bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/ssmdemo?characterEncoding=UTF-8"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value=""></property>
+		<property name="maxActive" value="10" />
+		<property name="maxIdle" value="5" />
+	</bean>
+
+	<!-- 配置sqlSessionFactoryBean工厂对象 -->
+	<bean name="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="typeAliasesPackage" value="com.gec.pojo"></property>
+	</bean>
+
+	<!-- 配置mapper映射扫描器 -->
+	<bean name="mapper" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.gec.dao"></property>
+	</bean>
+
+	<!-- 开启注解扫描 -->
+	<context:component-scan base-package="com.gec.service"></context:component-scan>
+
+	<!--配置事务管理 -->
+	<bean
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		name="transactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+</beans>
